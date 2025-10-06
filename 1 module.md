@@ -24,4 +24,5 @@ apt-get update && apt-get install -y iptables
 iptables -t nat -A POSTROUTING -o ens20 -s 0/0 -j MASQUERADE
 iptables-save > /etc/sysconfig/iptables
 systemctl enable --now iptables
-echo "Настройка завершена!"```
+echo "Настройка завершена!"
+```
