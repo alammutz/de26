@@ -126,7 +126,6 @@ mask 255.255.255.240
 gateway 192.168.2.1
 dns 192.168.1.10
 domain-name au-team.irpo
-exit
 ex
 interface int2
 dhcp-server 1
