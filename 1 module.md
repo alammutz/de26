@@ -37,7 +37,7 @@ hostname HQ-RTR
 ip domain-name au-team.irpo
 interface int0
 description "to isp"
-ip address 172.16.4.4/28
+ip address 172.16.1.4/28
 ip nat outside
 ex
 port te0
@@ -50,7 +50,7 @@ connect port te0 service-instance te0/int0
 ex
 interface int1
 description "to hq-srv"
-ip address 192.168.1.1/26
+ip address 192.168.1.1/27
 ip nat inside
 ex
 interface int2
