@@ -40,7 +40,7 @@ password P@ssw0rd
 role admin
 ntp timezone utc+5
 interface int0
-ip address 172.16.1.2/28
+ip address 172.16.1.4/28
 ip nat outside
 exit
 interface int1
