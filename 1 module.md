@@ -214,6 +214,38 @@ systemctl restart network
 - HQ-SRV
 
 ```
+mkdir -p /etc/net/ifaces/ens20
+cat > /etc/net/ifaces/ens20/options <<EOF
+DISABLED=no
+TYPE=eth
+BOOTPROTO=static
+CONFIG_IPV4=yes
+EOF
+echo "192.168.1.10/27" > /etc/net/ifaces/ens20/ipv4address
+echo "default via 192.168.1.1" > /etc/net/ifaces/ens20/ipv4route
+systemctl restart network
+useradd remote_user -u 2026
+echo "remote_user:P@ssw0rd" | chpasswd
+sed -i 's/^# \(%wheel.*NOPASSWD.*\)/\1/' /etc/sudoers
+gpasswd -a remote_user wheel
+cat > /etc/openssh/sshd_config <<EOF
+Port 2026
+AllowUsers remote_user
+MaxAuthTries 2
+PasswordAuthentication yes
+Banner /etc/openssh/banner
+EOF
+echo "Authorized access only" > /etc/openssh/banner
+systemctl restart sshd
+rm -rf /etc/net/ifaces/ens20/ipv4address
+rm -rf /etc/net/ifaces/ens20/ipv4route
+cat > /etc/net/ifaces/ens20/options <<EOF
+BOOTPROTO=dhcp
+TYPE=eth
+CONFIG_IPV4=yes
+DISABLED=no
+EOF
+systemctl restart network
 systemctl disable --now bind
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-get update
@@ -235,6 +267,8 @@ address=/hq-cli.au-team.irpo/192.168.2.10
 ptr-record=10.2.168.192.in-addr.arpa,hq-cli.au-team.irpo
 address=/br-srv.au-team.irpo/192.168.3.10
 EOF
-echo "192.168.1.1	hq-rtr.au-team.irpo" >> /etc/hosts
+echo -e "192.168.1.1\thq-rtr.au-team.irpo" >> /etc/hosts
 systemctl restart dnsmasq
+timedatectl set-timezone Asia/Yekaterinburg
+timedatectl
 ```
