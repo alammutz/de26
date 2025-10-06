@@ -212,9 +212,9 @@ echo "default via 192.168.3.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 useradd sshuser -u 2026
 echo "sshuser:P@ssw0rd" | chpasswd
-sed -i 's/^# \(%wheel.*NOPASSWD.*\)/\1/' /etc/sudoers
+sed -i 's/^#\s*\(%wheel\s*ALL=(ALL:ALL)\s*NOPASSWD:\s*ALL\)/\1/' /etc/sudoers
 gpasswd -a "sshuser" wheel
-cat > /etc/ssh/sshd_config <<EOF
+cat > /etc/openssh/sshd_config <<EOF
 Port 2026
 AllowUsers sshuser
 MaxAuthTries 2
@@ -243,9 +243,9 @@ echo "default via 192.168.1.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 useradd sshuser -u 2026
 echo "sshuser:P@ssw0rd" | chpasswd
-sed -i 's/^# \(%wheel.*NOPASSWD.*\)/\1/' /etc/sudoers
+sed -i 's/^#\s*\(%wheel\s*ALL=(ALL:ALL)\s*NOPASSWD:\s*ALL\)/\1/' /etc/sudoers
 gpasswd -a "sshuser" wheel
-cat > /etc/ssh/sshd_config <<EOF
+cat > /etc/openssh/sshd_config <<EOF
 Port 2026
 AllowUsers sshuser
 MaxAuthTries 2
@@ -294,9 +294,9 @@ echo "default via 192.168.2.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 useradd sshuser -u 2026
 echo "sshuser:P@ssw0rd" | chpasswd
-sed -i 's/^# \(%wheel.*NOPASSWD.*\)/\1/' /etc/sudoers
+sed -i 's/^#\s*\(%wheel\s*ALL=(ALL:ALL)\s*NOPASSWD:\s*ALL\)/\1/' /etc/sudoers
 gpasswd -a "sshuser" wheel
-cat > /etc/ssh/sshd_config <<EOF
+cat > /etc/openssh/sshd_config <<EOF
 Port 2026
 AllowUsers sshuser
 MaxAuthTries 2
