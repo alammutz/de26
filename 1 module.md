@@ -166,15 +166,11 @@ connect port te1 service-instance te1/int1
 exit
 ip route 0.0.0.0 0.0.0.0 172.16.2.1
 write
-en
-conf t
 username net_admin
 password P@ssw0rd
 role admin
 exit
 write
-en
-conf t
 interface tunnel.0
 ip address 172.16.0.2/30
 ip mtu 1400
@@ -182,8 +178,6 @@ ip tunnel 172.16.2.5 172.16.1.4 mode gre
 ip ospf authentication-key ecorouter
 exit
 write
-en
-conf t
 router ospf 1
 network 172.16.0.2/30 area 0
 network 192.168.3.0/28 area 0
@@ -192,14 +186,10 @@ no passive-interface tunnel.0
 area 0 authentication
 exit
 write
-en
-conf t
 ip name-server 8.8.8.8
 ip nat pool NAT_POOL 192.168.3.1-192.168.3.254
 ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 write
-en
-conf t
 ntp timezone utc+5
 ntp server 172.16.2.1
 write
