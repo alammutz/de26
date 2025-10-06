@@ -199,7 +199,7 @@ write
 ```
 hostnamectl hostname HQ-CLI.au-team.irpo
 mkdir -p /etc/net/ifaces/ens20
-cat <<EOF > /etc/net/ifaces/ens20/options
+cat > /etc/net/ifaces/ens20/options <<EOF
 DISABLED=no
 TYPE=eth
 BOOTPROTO=static
