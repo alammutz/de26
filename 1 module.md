@@ -120,6 +120,8 @@ conf t
 ip pool cli_pool 192.168.2.10-192.168.2.10
 dhcp-server 1
 ip pool cli_pool 1
+exit
+dhcp-server 1
 mask 255.255.255.240
 gateway 192.168.2.1
 dns 192.168.1.10
