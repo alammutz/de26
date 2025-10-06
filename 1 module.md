@@ -188,7 +188,7 @@ area 0 authentication
 ex
 write
 ip nat pool NAT_POOL 192.168.3.1-192.168.3.254
-ip nat source dynamic inside-to-outside overload interface int0
+ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 ntp timezone utc+5
 ex
 write
