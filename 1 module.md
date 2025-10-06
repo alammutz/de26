@@ -195,20 +195,36 @@ ntp server 172.16.2.1
 write
 ```
 
-- HQ-CLI
+- BR-SRV
 
 ```
-hostnamectl set-hostname HQ-CLI.au-team.irpo
+hostnamectl set-hostname br-srv.au-team.irpo
+exec bash
 mkdir -p /etc/net/ifaces/ens20
 cat > /etc/net/ifaces/ens20/options <<EOF
-DISABLED=no
 TYPE=eth
 BOOTPROTO=static
+DISABLED=no
 CONFIG_IPV4=yes
 EOF
-echo "192.168.2.10/28" > /etc/net/ifaces/ens20/ipv4address
-echo "default via 192.168.2.1" > /etc/net/ifaces/ens20/ipv4route
+echo "192.168.3.10/28" > /etc/net/ifaces/ens20/ipv4address
+echo "default via 192.168.3.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
+useradd sshuser -u 2026
+echo "sshuser:P@ssw0rd" | chpasswd
+sed -i 's/^# \(%wheel.*NOPASSWD.*\)/\1/' /etc/sudoers
+gpasswd -a "sshuser" wheel
+cat > /etc/ssh/sshd_config <<EOF
+Port 2026
+AllowUsers sshuser
+MaxAuthTries 2
+PasswordAuthentication yes
+Banner /etc/openssh/banner
+EOF
+echo "Authorized access only" > /etc/openssh/banner
+systemctl restart sshd
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+timedatectl set-timezone Asia/Yekaterinburg
 ```
 
 - HQ-SRV
