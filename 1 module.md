@@ -197,16 +197,14 @@ write
 - HQ-CLI
 
 ```
-hostnamectl hostname HQ-CLI.au-team.irpo
 mkdir -p /etc/net/ifaces/ens20
 cat <<EOF > /etc/net/ifaces/ens20/options
-BOOTPROTO=dhcp
+DISABLED=no
 TYPE=eth
+BOOTPROTO=static
+CONFIG_IPV4=yes
 EOF
-cat <<EOF > /etc/resolv.conf
-nameserver 8.8.8.8
-EOF
+echo "192.168.2.10/28" > /etc/net/ifaces/ens20/ipv4address
+echo "default via 192.168.2.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
-timedatectl set-timezone Asia/Yekaterinburg
-timedatectl
 ```
