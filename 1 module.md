@@ -88,7 +88,7 @@ interface int3
 connect port te1 service-instance te1/int3
 ex
 write
-ip route 0.0.0.0 0.0.0.0 172.16.4.1
+ip route 0.0.0.0 0.0.0.0 172.16.1.1
 write
 username net_admin
 password P@ssw0rd
@@ -98,13 +98,14 @@ write
 int tunnel.0
 ip add 172.16.0.1/30
 ip mtu 1400
-ip tunnel 172.16.4.4 172.16.5.5 mode gre
+ip tunnel 172.16.1.4 172.16.2.5 mode gre
 ip ospf authentication-key ecorouter
 exit
 write
 router ospf 1
-network 172.16.5.0/28 area 0
-network 192.168.3.0/27 area 0
+network 172.16.0.1/30 area 0
+network 192.168.2.0/27 area 0
+network 192.168.3.0/28 area 0
 passive-interface default
 no passive-interface tunnel.0
 area 0 authentication
