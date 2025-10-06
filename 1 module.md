@@ -1,6 +1,7 @@
 ### 1. Произведение базовой настройки устройств
 - ISP
-```hostname ISP
+```
+hostname ISP
 mkdir -p /etc/net/ifaces/{ens20,ens21,ens22}
 cat <<EOF > /etc/net/ifaces/ens20/options
 BOOTPROTO=dhcp
