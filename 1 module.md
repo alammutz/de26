@@ -27,7 +27,8 @@ systemctl enable --now iptables
 echo "Настройка завершена!"
 ```
 - HQ-RTR
-  ```
+
+```
   en
 conf t
 hostname HQ-RTR
