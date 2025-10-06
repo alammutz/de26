@@ -1,30 +1,42 @@
 ### 1. Произведение настройки устройств
 - ISP
 ```
-hostname ISP
+hostnamectl set-hostname ISP
+exec bash
 mkdir -p /etc/net/ifaces/{ens20,ens21,ens22}
-cat <<EOF > /etc/net/ifaces/ens20/options
-BOOTPROTO=dhcp
-CONFIG_IPV4=yes
+cat > /etc/net/ifaces/ens20/options <<EOF
 DISABLED=no
 TYPE=eth
+BOOTPROTO=dhcp
+CONFIG_IPV4=yes
 EOF
 cp /etc/net/ifaces/ens20/options /etc/net/ifaces/ens21/options
 cp /etc/net/ifaces/ens20/options /etc/net/ifaces/ens22/options
-sed -i '/BOOTPROTO=dhcp/d' /etc/net/ifaces/ens21/options
-echo "BOOTPROTO=static" >> /etc/net/ifaces/ens21/options
+cat > /etc/net/ifaces/ens21/options <<EOF
+DISABLED=no
+TYPE=eth
+BOOTPROTO=static
+CONFIG_IPV4=yes
+EOF
+cat > /etc/net/ifaces/ens22/options <<EOF
+DISABLED=no
+TYPE=eth
+BOOTPROTO=static
+CONFIG_IPV4=yes
+EOF
 echo "172.16.1.1/28" > /etc/net/ifaces/ens21/ipv4address
-sed -i '/BOOTPROTO=dhcp/d' /etc/net/ifaces/ens22/options
-echo "BOOTPROTO=static" >> /etc/net/ifaces/ens22/options
 echo "172.16.2.1/28" > /etc/net/ifaces/ens22/ipv4address
-sed -i 's/#net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/' /etc/sysctl.conf
-sysctl -p /etc/sysctl.conf
+sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/' /etc/net/sysctl.conf
+sysctl -p /etc/net/sysctl.conf
 systemctl restart network
-apt-get update && apt-get install -y iptables
-iptables -t nat -A POSTROUTING -o ens20 -s 0/0 -j MASQUERADE
+apt-get update
+apt-get install iptables -y
+iptables -t nat -A POSTROUTING -o ens20 -s 172.16.1.0/28 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o ens20 -s 172.16.2.0/28 -j MASQUERADE
 iptables-save > /etc/sysconfig/iptables
-systemctl enable --now iptables
-echo "Настройка завершена!"
+systemctl enable --now iptables.service
+apt-get install --reinstall tzdata -y
+timedatectl set-timezone Asia/Yekaterinburg
 ```
 - HQ-RTR
 
