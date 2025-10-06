@@ -197,7 +197,7 @@ write
 - HQ-CLI
 
 ```
-hostnamectl hostname HQ-CLI.au-team.irpo
+hostnamectl set-hostname HQ-CLI.au-team.irpo
 mkdir -p /etc/net/ifaces/ens20
 cat > /etc/net/ifaces/ens20/options <<EOF
 DISABLED=no
