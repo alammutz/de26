@@ -30,107 +30,117 @@ timedatectl set-timezone Asia/Yekaterinburg
 ```
 en
 conf t
-hostname HQ-RTR
+hostname hq-rtr
 ip domain-name au-team.irpo
 interface int0
 description "to isp"
 ip address 172.16.1.4/28
 ip nat outside
-ex
+exit
 port te0
 service-instance te0/int0
 encapsulation untagged
-ex
-ex
+exit
+exit
 interface int0
 connect port te0 service-instance te0/int0
-ex
+exit
 interface int1
 description "to hq-srv"
 ip address 192.168.1.1/27
 ip nat inside
-ex
+exit
 interface int2
 description "to hq-cli"
 ip address 192.168.2.1/28
 ip nat inside
-ex
+exit
 port te1
 service-instance te1/int1
 encapsulation dot1q 100
 rewrite pop 1
-ex
+exit
 service-instance te1/int2
 encapsulation dot1q 200
 rewrite pop 1
-ex
-ex
+exit
+exit
 interface int1
 connect port te1 service-instance te1/int1
-ex
+exit
 interface int2
 connect port te1 service-instance te1/int2
-ex
+exit
+ip route 0.0.0.0 0.0.0.0 172.16.1.1
+write
+en
+conf t
+username net_admin
+password P@ssw0rd
+role admin
+exit
+write
+en
+conf t
 interface int3
 description "999"
 ip address 192.168.99.1/29
-ex
+exit
 port te1
 service-instance te1/int3
 encapsulation dot1q 999
 rewrite pop 1
-ex
-ex
+exit
+exit
 interface int3
 connect port te1 service-instance te1/int3
-ex
 write
-ip route 0.0.0.0 0.0.0.0 172.16.1.1
-write
-username net_admin
-password P@ssw0rd
-role admin
-ex
-write
-int tunnel.0
-ip add 172.16.0.1/30
+en
+conf t
+interface tunnel.0
+ip address 172.16.0.1/30
 ip mtu 1400
 ip tunnel 172.16.1.4 172.16.2.5 mode gre
 ip ospf authentication-key ecorouter
 exit
 write
+en
+conf t
 router ospf 1
 network 172.16.0.1/30 area 0
-network 192.168.2.0/27 area 0
-network 192.168.3.0/28 area 0
+network 192.168.1.0/27 area 0
+network 192.168.2.0/28 area 0
 passive-interface default
 no passive-interface tunnel.0
 area 0 authentication
-ex
+exit
 write
+en
+conf t
+ip name-server 8.8.8.8
 ip nat pool NAT_POOL 192.168.1.1-192.168.1.254,192.168.2.1-192.168.2.254
 ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
-interface int0
-write memory
-ex
-ntp timezone utc+5
-ex
 write
+en
 conf t
 ip pool cli_pool 192.168.2.10-192.168.2.10
 dhcp-server 1
-ip pool cli_pool 1
-exit
-dhcp-server 1
+pool cli_pool 1
 mask 255.255.255.240
 gateway 192.168.2.1
 dns 192.168.1.10
 domain-name au-team.irpo
-ex
+exit
 interface int2
 dhcp-server 1
+exit
+exit
 write
-ex
+en
+conf t
+ntp timezone utc+5
+ntp server 172.16.1.1
+write
 ```
 
 - BR-RTR
