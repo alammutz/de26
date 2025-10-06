@@ -193,3 +193,20 @@ ntp timezone utc+5
 ex
 write
 ```
+
+- HQ-CLI
+
+```
+hostnamectl hostname HQ-CLI.au-team.irpo
+mkdir -p /etc/net/ifaces/ens20
+cat <<EOF > /etc/net/ifaces/ens20/options
+BOOTPROTO=dhcp
+TYPE=eth
+EOF
+cat <<EOF > /etc/resolv.conf
+nameserver 8.8.8.8
+EOF
+systemctl restart network
+timedatectl set-timezone Asia/Yekaterinburg
+timedatectl
+```
