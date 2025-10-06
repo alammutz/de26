@@ -35,7 +35,7 @@ hostname HQ-RTR
 ip domain-name au-team.irpo
 interface int0
 description "to isp"
-ip address 172.16.4.4/28
+ip address 172.16.1.4/28
 ip nat outside
 ex
 port te0
@@ -48,7 +48,7 @@ connect port te0 service-instance te0/int0
 ex
 interface int1
 description "to hq-srv"
-ip address 192.168.1.1/26
+ip address 192.168.1.1/27
 ip nat inside
 ex
 interface int2
@@ -86,7 +86,7 @@ interface int3
 connect port te1 service-instance te1/int3
 ex
 write
-ip route 0.0.0.0 0.0.0.0 172.16.4.1
+ip route 0.0.0.0 0.0.0.0 172.16.1.1
 write
 username net_admin
 password P@ssw0rd
@@ -96,13 +96,14 @@ write
 int tunnel.0
 ip add 172.16.0.1/30
 ip mtu 1400
-ip tunnel 172.16.4.4 172.16.5.5 mode gre
+ip tunnel 172.16.1.4 172.16.2.5 mode gre
 ip ospf authentication-key ecorouter
 exit
 write
 router ospf 1
-network 172.16.5.0/28 area 0
-network 192.168.3.0/27 area 0
+network 172.16.0.1/30 area 0
+network 192.168.1.0/27 area 0
+network 192.168.2.0/28 area 0
 passive-interface default
 no passive-interface tunnel.0
 area 0 authentication
@@ -141,7 +142,7 @@ conf t
 hostname BR-RTR
 interface int0
 description "to isp"
-ip address 172.16.5.5/28
+ip address 172.16.2.5/28
 ip nat outside
 ex
 port te0
@@ -154,7 +155,7 @@ connect port te0 service-instance te0/int0
 ex
 interface int1
 description "to br-srv"
-ip address 192.168.3.1/27
+ip address 192.168.3.1/28
 ip nat inside
 ex
 port te1
@@ -165,7 +166,7 @@ ex
 interface int1
 connect port te1 service-instance te1/int1
 ex
-ip route 0.0.0.0 0.0.0.0 172.16.5.1
+ip route 0.0.0.0 0.0.0.0 172.16.2.1
 write
 username net_admin
 password P@ssw0rd
@@ -175,13 +176,13 @@ write
 int tunnel.0
 ip address 172.16.0.2/30
 ip mtu 1400
-ip tunnel 172.16.5.5 172.16.4.4 mode gre
+ip tunnel 172.16.2.5 172.16.1.4 mode gre
 ip ospf authentication-key ecorouter
 ex
 write
 router ospf 1
-network 172.16.5.0/28 area 0
-network 192.168.3.0/27 area 0
+network 172.16.0.2/28 area 0
+network 192.168.3.0/28 area 0
 passive-interface default
 no passive-interface tunnel.0
 area 0 authentication
