@@ -31,7 +31,7 @@ systemctl restart nfs-server
 - HQ-CLI
 
 ```
-apt-get update && apt-get install nfs-common -y
+apt-get update && apt-get install nfs-clients -y
 mkdir -p /mnt/nfs
 echo "192.168.1.10:/raid/nfs /mnt/nfs nfs intr,soft,_netdev,x-systemd.automount 0 0" >> /etc/fstab
 mount -a
