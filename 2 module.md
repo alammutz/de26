@@ -149,14 +149,28 @@ timedatectl
 apt-get update
 apt-get install ansible -y
 cat > /etc/ansible/hosts <<EOF
-[HQ-SRV]
-192.168.1.10 ansible_user=remote_user ansible_port=2026
-[HQ-CLI]
-192.168.2.10 ansible_user=remote_user ansible_port=2026
-[HQ-RTR]
-192.168.1.1 ansible_user=net_admin ansible_password=P@ssw0rd ansible_connection=network_cli ansible_network_os=ios
-[BR-RTR]
-192.168.3.1 ansible_user=net_admin ansible_password=P@ssw0rd ansible_connection=network_cli ansible_network_os=ios
+VHS:
+ hosts:
+  HQ-SRV:
+   ansible_host: 192.168.1.10
+   ansible_user: remote_user
+   ansible_port: 2026
+  HQ-CLI:
+   ansible_host: 192.168.2.10
+   ansible_user: remote_user
+   ansible_port: 2026
+  HQ-RTR:
+   ansible_host: 192.168.1.1
+   ansible_user: net_admin
+   ansible_password: P@sswOrd
+   ansible_connection: network_cli
+   ansible_network_os: ios
+  BR-RTR:
+   ansible_host: 192.168.3.1
+   ansible_user: net_admin
+   ansible_password: P@sswOrd
+   ansible_connection: network_cli
+   ansible_network_os: ios
 EOF
 cat > /etc/ansible/ansible.cfg <<EOF
 [defaults]
