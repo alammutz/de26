@@ -82,8 +82,8 @@ server 172.16.2.5 iburst prefer
 driftfile /var/lib/chrony/drift
 logdir /var/log/chrony
 EOF
-```
 systemctl enable --now chronyd
 systemctl restart chronyd
 chronyc sources
 timedatectl
+```
