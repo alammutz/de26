@@ -95,6 +95,8 @@ timedatectl
   <summary>2-5. Конфигурация Ansible на сервере BR-SRV</summary>
 
 - BR-SRV
+
+```
 apt-get update
 apt-get install ansible -y
 cat > /etc/ansible/hosts <<EOF
@@ -113,7 +115,9 @@ ansible_python_interpreter=/usr/bin/python3
 interpreter_python=auto_silent
 host_key_checking=false
 EOF
+```
 
+```
 - HQ-CLI
 useradd remote_user -u 2026
 echo "remote_user:P@ssw0rd" | chpasswd
@@ -128,10 +132,13 @@ Banner /etc/openssh/banner
 EOF
 echo "Authorized access only" > /etc/openssh/banner
 systemctl restart sshd
+```
 
+```
 - BR-SRV
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 ssh-copy-id -o StrictHostKeyChecking=no -p 2026 remote_user@192.168.1.10
 ssh-copy-id -o StrictHostKeyChecking=no -p 2026 remote_user@192.168.2.10
 sleep 3
 ansible all -m ping
+```
