@@ -12,7 +12,7 @@ lsblk
 mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
 mdadm --detail --scan --verbose >> /etc/mdadm.conf
 apt-get update && apt-get install fdisk -y
-echo -e "n\np\n1\n\n\nw" | fdisk /dev/md0
+echo -e "n\n\n\n\n\nw\n" | fdisk /dev/md0
 mkfs.ext4 /dev/md0p1
 echo "/dev/md0p1 /raid ext4 defaults 0 0" >> /etc/fstab
 mkdir /raid
