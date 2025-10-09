@@ -1,6 +1,6 @@
 </details>
 <details>
-  <summary>### 2-4. Настройка службы сетевого времени</summary>
+  <summary> 2-4. Настройка службы сетевого времени</summary>
 
 - ISP
 
