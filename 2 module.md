@@ -78,7 +78,7 @@ ntp server 172.16.1.4
 ntp timezone utc+5
 exit
 show ntp status
-write memory
+write
 ```
 
 - BR-RTR
@@ -90,7 +90,7 @@ ntp server 172.16.2.5
 ntp timezone utc+5
 exit
 show ntp status
-write memory
+write
 ```
 
 - HQ-CLI
