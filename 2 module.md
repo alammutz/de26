@@ -2,6 +2,7 @@
 <details>
   <summary>2,3. Конфигурация файлового хранилища на сервере HQ-SRV</summary>
 
+
 ###### Необходимо добавить 2 диска по 1 ГБ
 
 - HQ-SRV
@@ -46,7 +47,7 @@ ls /raid/nfs
 
 </details>
 <details>
-  <summary>2-4. Настройка службы сетевого времени</summary>
+  <summary>4. Настройка службы сетевого времени</summary>
 
 
 - ISP
@@ -139,7 +140,7 @@ timedatectl
 
 </details>
 <details>
-  <summary>2-5. Конфигурация Ansible на сервере BR-SRV</summary>
+  <summary>5. Конфигурация Ansible на сервере BR-SRV</summary>
 
 
 - BR-SRV
