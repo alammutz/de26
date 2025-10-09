@@ -2,6 +2,7 @@
 <details>
   <summary>2-4. Настройка службы сетевого времени</summary>
 
+
 - ISP
 
 ```
@@ -93,6 +94,7 @@ timedatectl
 </details>
 <details>
   <summary>2-5. Конфигурация Ansible на сервере BR-SRV</summary>
+
 
 - BR-SRV
   
