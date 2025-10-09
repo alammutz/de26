@@ -172,12 +172,17 @@ VHS:
    ansible_connection: network_cli
    ansible_network_os: ios
 EOF
-cat > /etc/ansible/ansible.cfg <<EOF
-[defaults]
+if ! grep -q "^\[defaults\]" /etc/ansible/ansible.cfg; then
+  echo "[defaults]" >> /etc/ansible/ansible.cfg
+fi
+sed -i '/^\[defaults\]/!b;n;/ansible_python_interpreter/!{i\
 ansible_python_interpreter=/usr/bin/python3
+\};/interpreter_python/!{i\
 interpreter_python=auto_silent
+\};/host_key_checking/!{i\
 host_key_checking=false
-EOF
+\}' /etc/ansible/ansible.cfg
+
 ```
 
 - HQ-CLI
