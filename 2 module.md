@@ -89,3 +89,49 @@ systemctl restart chronyd
 chronyc sources
 timedatectl
 ```
+
+</details>
+<details>
+  <summary>2-5. Конфигурация Ansible на сервере BR-SRV</summary>
+
+- BR-SRV
+apt-get update
+apt-get install ansible -y
+cat > /etc/ansible/hosts <<EOF
+[HQ-SRV]
+192.168.1.10 ansible_user=remote_user ansible_port=2026
+[HQ-CLI]
+192.168.2.10 ansible_user=remote_user ansible_port=2026
+[HQ-RTR]
+192.168.1.1 ansible_user=net_admin ansible_password=P@ssw0rd ansible_connection=network_cli ansible_network_os=ios
+[BR-RTR]
+192.168.3.1 ansible_user=net_admin ansible_password=P@ssw0rd ansible_connection=network_cli ansible_network_os=ios
+EOF
+cat > /etc/ansible/ansible.cfg <<EOF
+[defaults]
+ansible_python_interpreter=/usr/bin/python3
+interpreter_python=auto_silent
+host_key_checking=false
+EOF
+
+- HQ-CLI
+useradd remote_user -u 2026
+echo "remote_user:P@ssw0rd" | chpasswd
+sed -i 's/^#\s*\(%wheel\s*ALL=(ALL:ALL)\s*NOPASSWD:\s*ALL\)/\1/' /etc/sudoers
+gpasswd -a "remote_user" wheel
+cat > /etc/ssh/sshd_config <<EOF
+Port 2026
+AllowUsers remote_user
+MaxAuthTries 2
+PasswordAuthentication yes
+Banner /etc/openssh/banner
+EOF
+echo "Authorized access only" > /etc/openssh/banner
+systemctl restart sshd
+
+- BR-SRV
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+ssh-copy-id -o StrictHostKeyChecking=no -p 2026 remote_user@192.168.1.10
+ssh-copy-id -o StrictHostKeyChecking=no -p 2026 remote_user@192.168.2.10
+sleep 3
+ansible all -m ping
