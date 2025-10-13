@@ -274,3 +274,109 @@ ssh-copy-id -o StrictHostKeyChecking=no -p 2026 remote_user@192.168.2.10
 sleep 3
 ansible all -m ping
 ```
+
+</details>
+<details>
+  <summary>6. Развертывание веб-приложения Docker на BR-SRV</summary>
+
+- BR-SRV
+
+```
+apt-get update && apt-get install -y docker-compose docker-engine
+systemctl enable --now docker
+mount -o loop /dev/sr0
+docker load -i /media/ALTLinux/docker/site_latest.tar
+docker load -i /media/ALTLinux/docker/mariadb_latest.tar
+cat << EOF >> /root/site.yml
+services:
+  db:
+    image: mariadb
+    container_name: db
+    environment:
+      DB_NAME: testdb
+      DB_USER: test
+      DB_PASS: Passw0rd
+      MYSQL_ROOT_PASSWORD: Passw0rd
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: test
+      MYSQL_PASSWORD: Passw0rd
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  testapp:
+    image: site
+    container_name: testapp
+    environment:
+      DB_TYPE: maria
+      DB_HOST: db
+      DB_NAME: testdb
+      DB_USER: test
+      DB_PASS: Passw0rd
+      DB_PORT: 3306
+    ports:
+      - "8080:8000"
+    networks:
+      - app_network
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  db_data:
+
+networks:
+  app_network:
+    driver: bridge
+EOF
+cat << EOF >> launch.sh
+docker compose -f site.yml up -d 
+sleep 10 
+docker exec -it db mysql -u root -pPassw0rd -e "
+CREATE DATABASE IF NOT EXISTS testdb;
+
+CREATE USER IF NOT EXISTS 'test'@'%' IDENTIFIED BY 'Passw0rd';
+
+GRANT ALL PRIVILEGES ON testdb.* TO 'test'@'%';
+
+FLUSH PRIVILEGES;"
+EOF
+```
+
+</details>
+<details>
+  <summary>7. Развертывание веб-приложения на HQ-SRV</summary>
+
+- HQ-SRV
+
+```
+apt-get update
+apt-get install -y apache2 php8.2 apache2-mod_php8.2 mariadb-server php8.2-{opcache,curl,gd,intl,mysqli,xml,xmlrpc,ldap,zip,soap,mbstring,json,xmlreader,fileinfo,sodium}
+mount -o loop /dev/sr0 /mnt
+systemctl enable --now httpd2 mysqld
+echo -e "\n\nP@ssw0rd\nP@ssw0rd\ny\ny\ny\ny\ny" | mysql_secure_installation
+mariadb -u root -pP@ssw0rd -e "CREATE DATABASE webdb;"
+mariadb -u root -pP@ssw0rd -e "CREATE USER 'webc'@'localhost' IDENTIFIED BY 'P@ssw0rd';"
+mariadb -u root -pP@ssw0rd -e "GRANT ALL PRIVILEGES ON webdb.* TO 'webc'@'localhost';"
+mariadb -u root -pP@ssw0rd -e "FLUSH PRIVILEGES;"
+iconv -f UTF-16LE -t UTF-8 /mnt/web/dump.sql > /tmp/dump_utf8.sql
+mariadb -u root -pP@ssw0rd webdb < /tmp/dump_utf8.sql
+chmod 777 /var/www/html
+cp /mnt/web/index.php /var/www/html/
+cp /mnt/web/logo.png /var/www/html/
+rm -f /var/www/html/index.html
+chown apache2:apache2 /var/www/html
+sed -i 's/$servername = ".*";/$servername = "localhost";/' /var/www/html/index.php
+sed -i 's/$username = ".*";/$username = "webc";/' /var/www/html/index.php
+sed -i 's/$password = ".*";/$password = "P@ssw0rd";/' /var/www/html/index.php
+sed -i 's/$dbname = ".*";/$dbname = "webdb";/' /var/www/html/index.php
+systemctl restart httpd2
+```
+
+- HQ-CLI
+
+```
+systemctl restart network
+```
