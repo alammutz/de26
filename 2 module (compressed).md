@@ -68,6 +68,7 @@ server {
 EOF
 systemctl restart nginx
 nginx -t
+echo "Done!"
 ```
 
 </details>
@@ -159,6 +160,7 @@ logdir /var/log/chrony
 EOF
 systemctl enable --now chronyd
 systemctl restart chronyd
+echo "Done!"
 ```
 
 </details>
@@ -312,6 +314,7 @@ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 ssh-copy-id -o StrictHostKeyChecking=no -p 2026 remote_user@192.168.1.10
 ssh-copy-id -o StrictHostKeyChecking=no -p 2026 remote_user@192.168.2.10
 ansible all -m ping
+echo "Done!"
 ```
 
 </details>
@@ -351,7 +354,8 @@ echo "Authorized access only" > /etc/openssh/banner
 sed -i '1i\Port 2026\nAllowUsers remote_user\nMaxAuthTries 2\nPasswordAuthentication yes\nBanner /etc/openssh/banner' /etc/ssh/sshd_config
 systemctl enable --now sshd
 systemctl restart sshd
-
+sleep 3
 
 apt-get install yandex-browser-stable -y
+echo "Done!"
 ```
