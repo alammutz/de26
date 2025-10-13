@@ -317,3 +317,41 @@ ansible all -m ping
 </details>
 <details>
   <summary>HQ-CLI</summary>
+
+```
+sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
+systemctl restart network
+apt-get update && apt-get install bind-utils -y
+system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
+reboot
+sleep 3
+apt-get install sudo libsss_sudo -y
+control sudo public
+sed -i '19 a\sudo_provider = ad' /etc/sssd/sssd.conf
+sed -i 's/services = nss, pam/services = nss, pam, sudo/' /etc/sssd/sssd.conf
+sed -i '28 a\sudoers: files sss' /etc/nsswitch.conf
+rm -rf /var/lib/sss/db/*
+sss_cache -E
+systemctl restart sssd
+
+
+apt-get update && apt-get install nfs-clients -y
+mkdir -p /mnt/nfs
+echo "192.168.1.10:/raid/nfs /mnt/nfs nfs intr,soft,_netdev,x-systemd.automount 0 0" >> /etc/fstab
+mount -a
+mount -v
+touch /mnt/nfs/test
+
+
+useradd remote_user -u 2026
+echo -e "P@ssw0rd\nP@ssw0rd" | passwd remote_user
+gpasswd -a "remote_user" wheel
+sed -i '/WHEEL_USERS.*ALL.*NOPASSWD.*ALL/s/^#//' /etc/sudoers
+echo "Authorized access only" > /etc/openssh/banner
+sed -i '1i\Port 2026\nAllowUsers remote_user\nMaxAuthTries 2\nPasswordAuthentication yes\nBanner /etc/openssh/banner' /etc/ssh/sshd_config
+systemctl enable --now sshd
+systemctl restart sshd
+
+
+apt-get install yandex-browser-stable -y
+```
