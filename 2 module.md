@@ -380,3 +380,29 @@ systemctl restart httpd2
 ```
 systemctl restart network
 ```
+
+</details>
+<details>
+  <summary>8. Конфигурация статической трансляции портов на маршрутизаторах</summary>
+
+- HQ-RTR
+
+```
+en
+conf t
+ip nat source static tcp 192.168.1.10 80 172.16.1.4 8080
+ip nat source static tcp 192.168.1.10 2026 172.16.1.4 2026
+exit
+write
+```
+
+- BR-RTR
+
+```
+en
+conf t
+ip nat source static tcp 192.168.3.10 8080 172.16.2.5 8080
+ip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026
+exit
+write
+```
