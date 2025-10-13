@@ -168,7 +168,6 @@ echo "Done!"
   <summary>BR-SRV</summary>
 
 ```
-
 if ! grep -q '^nameserver 8\.8\.8\.8$' /etc/resolv.conf; then
     echo 'nameserver 8.8.8.8' | tee -a /etc/resolv.conf
 fi
