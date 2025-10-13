@@ -2,6 +2,7 @@
 <details>
   <summary>1. Настройка доменного контроллера Samba на машине BR-SRV</summary>
   
+  
 - HQ-SRV
   
 ```
@@ -229,58 +230,38 @@ timedatectl
 ```
 apt-get update
 apt-get install ansible -y
-cat > /etc/ansible/hosts <<EOF
-VHS:
- hosts:
-  HQ-SRV:
-   ansible_host: 192.168.1.10
-   ansible_user: remote_user
-   ansible_port: 2026
-  HQ-CLI:
-   ansible_host: 192.168.2.10
-   ansible_user: remote_user
-   ansible_port: 2026
-  HQ-RTR:
-   ansible_host: 192.168.1.1
-   ansible_user: net_admin
-   ansible_password: P@sswOrd
-   ansible_connection: network_cli
-   ansible_network_os: ios
-  BR-RTR:
-   ansible_host: 192.168.3.1
-   ansible_user: net_admin
-   ansible_password: P@sswOrd
-   ansible_connection: network_cli
-   ansible_network_os: ios
+cat << EOF >> /etc/ansible/hosts
+[servers]
+HQ-SRV ansible_host=192.168.1.10
+HQ-CLI ansible_host=192.168.2.10
+[servers:vars]
+ansible_user=remote_user
+ansible_port=2026
+[routers]
+HQ-RTR ansible_host=192.168.1.1
+BR-RTR ansible_host=192.168.3.1
+[routers:vars]
+ansible_user=net_admin
+ansible_password=P@ssw0rd
+ansible_connection=network_cli
+ansible_network_os=ios
 EOF
-if ! grep -q "^\[defaults\]" /etc/ansible/ansible.cfg; then
-  echo "[defaults]" >> /etc/ansible/ansible.cfg
-fi
-sed -i '/^\[defaults\]/!b;n;/ansible_python_interpreter/!{i\
-ansible_python_interpreter=/usr/bin/python3
-\};/interpreter_python/!{i\
-interpreter_python=auto_silent
-\};/host_key_checking/!{i\
-host_key_checking=false
-\}' /etc/ansible/ansible.cfg
-
+sed -i '10 a\
+ansible_python_interpreter=/usr/bin/python3\
+interpreter_python=auto_silent\
+ansible_host_key_checking=false' /etc/ansible/ansible.cfg
 ```
 
 - HQ-CLI
   
 ```
 useradd remote_user -u 2026
-echo "remote_user:P@ssw0rd" | chpasswd
-sed -i 's/^#\s*\(%wheel\s*ALL=(ALL:ALL)\s*NOPASSWD:\s*ALL\)/\1/' /etc/sudoers
-gpasswd -a "remote_user" wheel
-cat > /etc/ssh/sshd_config <<EOF
-Port 2026
-AllowUsers remote_user
-MaxAuthTries 2
-PasswordAuthentication yes
-Banner /etc/openssh/banner
-EOF
-echo "Authorized access only" > /etc/openssh/banner
+echo -e "P@ssw0rd\nP@ssw0rd" | passwd remote_user
+gpasswd -a “remote_user” wheel
+sed -i '/WHEEL_USERS.*ALL.*NOPASSWD.*ALL/s/^#//' /etc/sudoers
+echo Authorized access only > /etc/openssh/banner
+sed -i '1i\Port 2026\nAllowUsers remote_user\nMaxAuthTries 2\nPasswordAuthentication yes\nBanner /etc/openssh/banner' /etc/openssh/sshd_config
+systemctl enable --now sshd
 systemctl restart sshd
 ```
 
