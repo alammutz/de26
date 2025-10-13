@@ -406,3 +406,87 @@ ip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026
 exit
 write
 ```
+
+</details>
+<details>
+  <summary>9. Настройка веб-сервера Nginx как обратный прокси-сервер на ISP</summary>
+
+- ISP
+
+```
+apt-get update && apt-get install nginx
+cat << EOF > /etc/nginx/sites-available.d/proxy.conf
+server {
+        listen 80;
+        server_name docker.au-team.irpo;
+        location / {
+                proxy_pass http://172.16.2.2:8080;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+        }
+}
+server {
+        listen 80;
+        server_name web.au-team.irpo;
+        location / {
+                proxy_pass http://172.16.1.2:8080;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+        }
+}
+EOF
+ln -sf /etc/nginx/sites-available.d/proxy.conf /etc/nginx/sites-enabled.d/
+nginx -t
+systemctl enable --now nginx
+systemctl restart nginx
+```
+
+</details>
+<details>
+  <summary>10. Настройка web-based аутентификации на ISP</summary>
+
+- ISP
+
+```
+apt-get update && apt-get install apache2-htpasswd -y
+htpasswd -bc /etc/nginx/.htpasswd WEB P@ssw0rd
+cat << EOF > /etc/nginx/sites-available.d/proxy.conf
+server {
+    listen 80;
+    server_name web.au-team.irpo;
+    
+    auth_basic "Restricted Access";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    
+    location / {
+        proxy_pass http://172.16.1.4:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+}
+
+server {
+    listen 80;
+    server_name docker.au-team.irpo;
+    
+    location / {
+        proxy_pass http://172.16.2.5:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+}
+EOF
+systemctl restart nginx
+nginx -t
+```
+
+</details>
+<details>
+  <summary>11. Установка приложения Яндекс Браузер на HQ-CLI</summary>
+
+- HQ-CLI
+
+```
+apt-get install yandex-browser-stable -y
+echo "Done!"
+```
