@@ -1,6 +1,7 @@
 </details>
 <details>
   <summary>1. Настройка доменного контроллера Samba на машине BR-SRV</summary>
+  
 - HQ-SRV
   
 ```
