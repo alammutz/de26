@@ -317,4 +317,5 @@ CONFIG_IPV4=yes
 EOF
 systemctl restart network
 timedatectl set-timezone Asia/Yekaterinburg
+systemctl restart sshd
 ```
