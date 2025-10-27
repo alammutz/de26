@@ -24,6 +24,7 @@ iptables-save > /etc/sysconfig/iptables
 systemctl enable --now iptables
 apt-get update && apt-get install --reinstall tzdata -y
 timedatectl set-timezone Asia/Yekaterinburg
+exec bash
 ```
 - HQ-RTR
 
