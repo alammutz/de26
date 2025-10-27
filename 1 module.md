@@ -223,7 +223,7 @@ Banner /etc/openssh/banner
 EOF
 echo "Authorized access only" > /etc/openssh/banner
 systemctl restart sshd
-echo nameserver 8.8.8.8 > /etc/resolv.conf
+echo nameserver 192.168.1.10 > /etc/resolv.conf
 timedatectl set-timezone Asia/Yekaterinburg
 ```
 
