@@ -276,6 +276,7 @@ address=/br-srv.au-team.irpo/192.168.3.10
 EOF
 echo "192.168.1.1 hq-rtr.au-team.irpo" >> /etc/hosts
 systemctl restart dnsmasq
+timedatectl set-timezone Asia/Yekaterinburg
 ```
 
 - HQ-CLI
